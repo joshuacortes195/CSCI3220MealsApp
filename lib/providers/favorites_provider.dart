@@ -3,7 +3,7 @@ import 'package:meals_app/data/dummy_data.dart';
 import 'package:meals_app/data/favorites_db.dart' as favorites_db;
 import 'package:meals_app/models/meal.dart';
 
-// Manages the list of favorite meals.
+// keeps track of which meals are favorites
 class FavoriteMealsNotifier extends StateNotifier<List<Meal>> {
   FavoriteMealsNotifier() : super([]);
 
@@ -17,15 +17,16 @@ class FavoriteMealsNotifier extends StateNotifier<List<Meal>> {
     ];
   }
 
-  // Adds or removes a meal from favorites.
+  // adds or removes a meal from favorites, returns true if it got added
   bool toggleMealFavoriteStatus(Meal meal) {
     final mealIsFavorite = state.contains(meal);
 
+    // already a favorite so take it out
     if (mealIsFavorite) {
       removeFavorite(meal);
       return false;
     } else {
-      state = [...state, meal];
+      state = [...state, meal]; // adds the meal to the end of the list
       favorites_db.addFavorite(meal.id); // saves it so it's still there next time
       return true;
     }
@@ -44,7 +45,7 @@ class FavoriteMealsNotifier extends StateNotifier<List<Meal>> {
   }
 }
 
-// Provides the current favorite meals.
+// lets any screen read or change the favorites list
 final favoriteMealsProvider =
     StateNotifierProvider<FavoriteMealsNotifier, List<Meal>>((ref) {
   return FavoriteMealsNotifier()..loadFavorites(); // loads saved favorites right away

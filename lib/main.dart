@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:meals_app/screens/tabs.dart';
@@ -15,7 +16,8 @@ final theme = ThemeData(
 
 // starting point of the app
 void main() {
-  runApp(const App()); // boots up our app widget
+  // provider scope lets every screen read the riverpod providers
+  runApp(const ProviderScope(child: App())); // boots up our app widget
 }
 
 // root widget that sets up the theme and first screen
@@ -25,7 +27,8 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: theme, 
+      debugShowCheckedModeBanner: false, // hides the red debug banner so it doesn't cover the app bar buttons
+      theme: theme,
       home: const TabsScreen(), 
     );
   }

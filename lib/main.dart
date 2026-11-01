@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:meals_app/screens/tabs.dart';
@@ -8,14 +9,19 @@ final theme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
     brightness: Brightness.dark,
-    seedColor: const Color.fromARGB(255, 131, 57, 0), 
+    seedColor: const Color.fromARGB(255, 131, 57, 0),
   ),
-  textTheme: GoogleFonts.latoTextTheme(), 
+  textTheme: GoogleFonts.latoTextTheme(),
 );
 
 // starting point of the app
 void main() {
-  runApp(const App()); // boots up our app widget
+  runApp(
+    // ProviderScope stores the state of all providers, so it has to wrap the app
+    const ProviderScope(
+      child: App(),
+    ),
+  );
 }
 
 // root widget that sets up the theme and first screen
@@ -25,8 +31,8 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: theme, 
-      home: const TabsScreen(), 
+      theme: theme,
+      home: const TabsScreen(),
     );
   }
 }

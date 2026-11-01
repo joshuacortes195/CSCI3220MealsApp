@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart'; 
 import 'package:flutter_riverpod/flutter_riverpod.dart'; 
-
+import 'package:meals_app/widgets/meal_photo_picker.dart';
 import 'package:meals_app/models/meal.dart'; 
 import 'package:meals_app/providers/favorites_provider.dart'; 
 
@@ -68,6 +68,8 @@ class MealDetailsScreen extends ConsumerWidget {
                   fit: BoxFit.cover, // fills the space without stretching
                 ),
               ),
+              // new photo section for user to add their own
+              MealPhotoPicker(mealId: meal.id),
               const SizedBox(height: 14),
               // ingredients section
               Text(

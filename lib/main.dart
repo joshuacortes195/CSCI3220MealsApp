@@ -9,15 +9,19 @@ final theme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
     brightness: Brightness.dark,
-    seedColor: const Color.fromARGB(255, 131, 57, 0), 
+    seedColor: const Color.fromARGB(255, 131, 57, 0),
   ),
-  textTheme: GoogleFonts.latoTextTheme(), 
+  textTheme: GoogleFonts.latoTextTheme(),
 );
 
 // starting point of the app
 void main() {
-  // provider scope lets every screen read the riverpod providers
-  runApp(const ProviderScope(child: App())); // boots up our app widget
+  runApp(
+    // ProviderScope stores the state of all providers, so it has to wrap the app
+    const ProviderScope(
+      child: App(),
+    ),
+  );
 }
 
 // root widget that sets up the theme and first screen

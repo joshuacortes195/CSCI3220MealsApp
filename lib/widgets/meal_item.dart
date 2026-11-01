@@ -1,11 +1,15 @@
-import 'package:flutter/material.dart'; 
-import 'package:transparent_image/transparent_image.dart'; 
+import 'dart:io';
 
-import 'package:meals_app/widgets/meal_item_trait.dart'; 
-import 'package:meals_app/models/meal.dart'; 
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:transparent_image/transparent_image.dart';
+
+import 'package:meals_app/widgets/meal_item_trait.dart';
+import 'package:meals_app/models/meal.dart';
+import 'package:meals_app/providers/meal_photos_provider.dart';
 
 // card for one meal in the list, picture with info on top
-class MealItem extends StatelessWidget {
+class MealItem extends ConsumerWidget {
   const MealItem({
     super.key,
     required this.meal,
@@ -28,16 +32,20 @@ class MealItem extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // the user's own photo for this meal if they added one
+    final photoPath = ref.watch(mealPhotosProvider)[meal.id];
+    final hasUserPhoto = photoPath != null && File(photoPath).existsSync();
+
     // card styling
     return Card(
-      margin: const EdgeInsets.all(8), 
+      margin: const EdgeInsets.all(8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ), // rounded corners
-      clipBehavior: Clip.hardEdge, 
+      clipBehavior: Clip.hardEdge,
       // makes the whole card tappable
-      elevation: 2, 
+      elevation: 2,
       child: InkWell(
         onTap: () {
           onSelectMeal(meal); // opens this meal's details
@@ -45,21 +53,29 @@ class MealItem extends StatelessWidget {
         // stacks the info bar on top of the picture
         child: Stack(
           children: [
-            // meal picture that fades in once it loads
-            FadeInImage(
-              placeholder: MemoryImage(kTransparentImage), 
-              image: NetworkImage(meal.imageUrl), 
-              fit: BoxFit.cover, 
-              height: 200,
-              width: double.infinity, 
-            ),
+            // user's photo if available otherwise the default image
+            if (hasUserPhoto)
+              Image.file(
+                File(photoPath),
+                fit: BoxFit.cover,
+                height: 200,
+                width: double.infinity,
+              )
+            else
+              FadeInImage(
+                placeholder: MemoryImage(kTransparentImage),
+                image: NetworkImage(meal.imageUrl),
+                fit: BoxFit.cover,
+                height: 200,
+                width: double.infinity,
+              ),
             // dark info bar pinned to the bottom of the picture
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
               child: Container(
-                color: Colors.black54, 
+                color: Colors.black54,
                 padding:
                     const EdgeInsets.symmetric(vertical: 6, horizontal: 44),
                 child: Column(
@@ -67,10 +83,10 @@ class MealItem extends StatelessWidget {
                     // meal title
                     Text(
                       meal.title,
-                      maxLines: 2, 
+                      maxLines: 2,
                       textAlign: TextAlign.center,
                       softWrap: true,
-                      overflow: TextOverflow.ellipsis, 
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -79,7 +95,7 @@ class MealItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center, 
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         MealItemTrait(
                           icon: Icons.schedule,

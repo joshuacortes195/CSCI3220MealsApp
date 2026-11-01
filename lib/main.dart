@@ -31,8 +31,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, // hides the red debug banner so it doesn't cover the app bar buttons
       theme: theme,
-      home: const TabsScreen(),
+      home: const TabsScreen(), 
     );
   }
 }

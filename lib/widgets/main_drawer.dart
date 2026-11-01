@@ -64,6 +64,24 @@ class MainDrawer extends StatelessWidget {
               onSelectScreen('meals');
             },
           ),
+          // favorites option
+          ListTile(
+            leading: Icon(
+              Icons.star,
+              size: 26,
+              color: Theme.of(context).colorScheme.onBackground,
+            ), // styling for the icon
+            title: Text(
+              'Favorites',
+              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    color: Theme.of(context).colorScheme.onBackground,
+                    fontSize: 24,
+                  ), // styling for the text
+            ),
+            onTap: () {
+              onSelectScreen('favorites'); // opens the favorites screen
+            },
+          ),
           // filters option
           ListTile(
             leading: Icon(

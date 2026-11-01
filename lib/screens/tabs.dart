@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals_app/screens/categories.dart';
 
+import 'package:meals_app/screens/favorites.dart';
 import 'package:meals_app/screens/filters.dart';
-import 'package:meals_app/screens/meals.dart';
 import 'package:meals_app/widgets/main_drawer.dart';
-import 'package:meals_app/providers/favorites_provider.dart';
 import 'package:meals_app/providers/filters_provider.dart';
 
 // starting values for the filters, all switched off
@@ -39,11 +38,18 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   // runs when an option in the drawer is tapped
   void _setScreen(String identifier) async {
     Navigator.of(context).pop();
-    // only the filters option opens a new screen, meals just stays here
+    // filters and favorites open a new screen, meals just stays here
     if (identifier == 'filters') {
       await Navigator.of(context).push<Map<Filter, bool>>(
         MaterialPageRoute(
           builder: (ctx) => const FiltersScreen(),
+        ),
+      );
+    } else if (identifier == 'favorites') {
+      // opens favorites as its own screen with a back button
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (ctx) => const FavoritesScreen(showAppBar: true),
         ),
       );
     }
@@ -60,16 +66,16 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
     // swap to the favorites page if that tab is selected
     if (_selectedPageIndex == 1) {
-      final favoriteMeals = ref.watch(favoriteMealsProvider); // watches favorites so the list updates
-      activePage = MealsScreen(
-        meals: favoriteMeals,
-      );
+      activePage = const FavoritesScreen();
       activePageTitle = 'Your Favorites';
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text(activePageTitle), // title changes with the tab
+        actions: [
+          if (_selectedPageIndex == 1) const ClearFavoritesButton(), // clear all button only on the favorites tab
+        ],
       ),
       drawer: MainDrawer(
         onSelectScreen: _setScreen,
